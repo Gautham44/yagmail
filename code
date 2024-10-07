@@ -1,0 +1,59 @@
+# Install the necessary Python packages:
+
+pip install yagmail python-dotenv
+
+
+# Create a .env file in the same directory as your script to securely store your email credentials:
+
+# Create a .env file and add your Gmail credentials to it like this:
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_APP_PASSWORD=your_app_password
+
+import yagmail
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Your Gmail credentials loaded from environment variables
+sender_email = os.getenv('EMAIL_USER')
+app_password = os.getenv('EMAIL_APP_PASSWORD')
+
+# Check if the credentials are loaded properly
+if not sender_email or not app_password:
+    raise Exception("Email credentials are not set in the environment variables.")
+
+# Function to send a secure email
+def send_secure_email(receiver_email, subject, body, attachments=None):
+    try:
+        # Initialize yagmail with secured credentials
+        yag = yagmail.SMTP(user=sender_email, password=app_password)
+        
+        # Send the email
+        yag.send(
+            to=receiver_email,
+            subject=subject,
+            contents=body,
+            attachments=attachments
+        )
+        print("Email sent successfully!")
+
+    except Exception as e:
+        print(f"Error while sending email: {e}")
+
+# Example usage of the send_email function
+if __name__ == "__main__":
+    receiver_email = "receiver_email@example.com"
+    subject = "Secure Test Email"
+    body = "This is a test email sent using Python with enhanced security."
+    
+    # Add attachments (optional) - leave empty or set to None if not needed
+    attachments = ['path_to_attachment']  # Replace with the file path(s) or leave None
+
+    send_secure_email(receiver_email, subject, body, attachments)
+# How to Make It Work: Setting up .env file: Make sure your .env file (in the same directory as the script) looks like this:
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_APP_PASSWORD=your_app_password
